@@ -26,15 +26,15 @@ Get more sensors visible in HA (power failure count, long power failures count, 
    - The correct name for the device (since this will be used with mDNS for OTA updates)
    - ESP8266 as the platform
    - The rest depends mostly on you environment I guess
- - When the config is created, make sure it looks like the p1_dsmr_zuidwijk.yaml config in this repo. 
+ - When the config is created, make sure it looks like the https://github.com/matthijsberg/DSMR-HomeAssistant/blob/main/esphome_config_example.yaml config in this repo. 
    - the name and file name should be what you defined when creating the sensor
-   - I use secrets in my config, if you want that too, create the WiFi, Passwords, etc. in the secrets editor in ESPHome (top right Hamburger menu, Secrets Editior)
+   - I use secrets in my config, if you want that too, create the WiFi, Passwords, etc. in the secrets editor in ESPHome (top right Hamburger menu, Secrets Editior. A secret entry should like a like `esphome_local: "P@SSW0RD"`)
  - Change the interface to you USB connection to the sensors (top right in screen) in stead of "Over The Air"
  - Flash the device (WARNING, your old config will be gone!)
  - When flashing completes sucessfully the device should turn green in the overview and you should see data coming in when monitoring the logs.
  - NOTE: When the device is not connected to the WiFi it will reboor every 15 minutes. So when you apply this to a wired version, make sure you adjust the API var in the config to avoid this (see ESPhome docs). 
 
-When you go to Confguration / Integrations the device should show up to be added. In Configuration / Devices in HA and find the sensor and when you open the details you should see all the entities with the DSMR meter values. :-) 
+When you go to Confguration / Integrations the device should show up to be added. When added as device, in Configuration / Devices in HA find the sensor and when you open the details you should see all the entities with the DSMR meter values. :-) 
 
 # Bonus
 Some additional handy things you can use in HA. 
@@ -90,7 +90,7 @@ utility_meter:
 ```
 
 ## "Realtime" gas consumption and DSMR 4 hourly value recreation
-For Electricity you get a interval value that gice you the usage of electricity at that point in time. For gas, you only get the totalling value im M3. using the meters about can get the usage on for example daily bases, but the smallest value you can use with the "utility_meter" integration in 15 minutes. To build a 15 minutes and hourly (my DSMR 4 meter had that value, and I have a LOT of history in Influx from that) use the folling add-on part for the utility_meter config
+For Electricity you get a interval value that gives you the usage of electricity at that point in time. For gas, you only get the totalling value im M3. using the utility_meter can get the usage on for example daily bases, but the smallest value you can use with the "utility_meter" integration in 15 minutes. To build a 15 minutes and hourly (my DSMR 4 meter had that hourly value, and I have a LOT of history in Influx from that) use the folling add-on part for the utility_meter config
 
 ```
   quarter-hourly_gas_consumption:
@@ -101,10 +101,12 @@ For Electricity you get a interval value that gice you the usage of electricity 
     cycle: hourly
 ```
 
-## MQTT from Sensor
-This is not rocket sience. Some basics, when using ESPhome data is send over a websocket connection to HA. This is the preffered method since some time for integration and overhead reasons apperently. You can still push data over MQTT out too with ESPHome. 
+NOTE: I tried building an averaging sensor and use the delta from that sensor as new sensor with a 5 min interval, but since the meter does not show 0 in that case you get weird results. If you find a way to do so, please share.
 
-Adding this should get MQTT in all it's basics running for you: # Example configuration entry
+## MQTT from Sensor
+This is not rocket sience. Some basics; when using ESPhome data is send over a websocket connection to HA. This is the preffered method since some time for integration and overhead reasons apperently. You can still push data over MQTT out too with ESPHome. 
+
+Adding this to you sensors yaml file in ESPHome and update the sensor should get MQTT in all it's basics running for you:
 ```
 mqtt:
   broker: 10.0.0.2
@@ -112,5 +114,5 @@ mqtt:
   password: MyMQTTPassword
 ```
 
-Now MQTT is not easy, as there are many config options, so from here on i'll point you to the ESPHome docs for it; https://esphome.io/components/mqtt.html . DO read, especially the red box, if you plan on using this.
+Now MQTT is not easy, as there are many config options, so from here on I'll point you to the ESPHome docs for it; https://esphome.io/components/mqtt.html . DO read, especially the red box, if you plan on using this.
   
