@@ -5,11 +5,11 @@ This version uses or is based on:
  - Marcel his hardware (tested with the Wemos 3.0 wireless reader)
  - This library on github (No need to download, this lib contains a modified version to add some sensors): https://github.com/nldroid/CustomP1UartComponent
  - This DSMR parser lib (no need to download); https://github.com/matthijskooijman/arduino-dsmr
- - Home Assistant (if you don't know what that is, your in the wrong place)
+ - Home Assistant (if you don't know what that is, you're in the wrong place)
  - ESP home in HA (if you don't know wat that is, start learning very fast)
 
 # Goals
-Get more sensors visible in HA (power swell, etc), different names (to match the values I had when using the wires DSMR interface in HA directly) and ability to enbele MQTT. Again, credit where credit is due, I just combine a lot of work / features that others buid. I only etended the nldroid library to add some sensors (that I think have bee left out deliberately) and use some ESPhome features in the config. Done. 
+Get more sensors visible in HA (power failure count, long power failures count, Voltage Sags per L and Vortage Swells per L), different names (to match the values I had when using the wired DSMR interface in HA directly) and ability to enable MQTT. Again, credit where credit is due, I just combine a lot of work / features that others buid. I only extended the nldroid library to add some sensors (that I think have been left out deliberately) and use some ESPhome features in the config. Done. 
 
 # How to
 
