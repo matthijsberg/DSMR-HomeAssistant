@@ -1,0 +1,150 @@
+esphome:
+  name: p1_dsmr_zuidwijk
+  platform: ESP8266
+  board: d1_mini
+  includes:
+    - dsmr_p1_sensor-mb.h
+  libraries:
+    - "Dsmr"
+
+wifi:
+  ssid: !secret wifi_ssid_iot
+  password: !secret wifi_password_iot
+  fast_connect: true
+  
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "esp_dsmr_uart Fallback Hotspot"
+    password: !secret esphome_local
+
+captive_portal:
+
+# Enable logging
+logger:
+  #level: DEBUG
+  esp8266_store_log_strings_in_flash: False
+  #baud_rate: 0
+
+# Enable Home Assistant API
+api:
+  password: !secret esphome_local
+
+ota:
+  password: !secret esphome_local
+  
+uart:
+  - rx_pin: D7
+    baud_rate: 115200
+    id: uart_p1
+
+sensor:
+  - platform: custom
+    lambda: |-
+      auto dsmr_p1_sensor = new CustomP1UartComponent(id(uart_p1));
+      App.register_component(dsmr_p1_sensor);
+      return {dsmr_p1_sensor->s_energy_delivered_tariff1, dsmr_p1_sensor->s_energy_delivered_tariff2, dsmr_p1_sensor->s_energy_returned_tariff1, dsmr_p1_sensor->s_energy_returned_tariff2, dsmr_p1_sensor->s_power_delivered, dsmr_p1_sensor->s_power_returned, dsmr_p1_sensor->s_electricity_failures, dsmr_p1_sensor->s_electricity_long_failures, dsmr_p1_sensor->s_electricity_sags_l1, dsmr_p1_sensor->s_electricity_sags_l2, dsmr_p1_sensor->s_electricity_sags_l3, dsmr_p1_sensor->s_electricity_swells_l1, dsmr_p1_sensor->s_electricity_swells_l2, dsmr_p1_sensor->s_electricity_swells_l3, dsmr_p1_sensor->s_voltage_l1, dsmr_p1_sensor->s_voltage_l2, dsmr_p1_sensor->s_voltage_l3, dsmr_p1_sensor->s_current_l1, dsmr_p1_sensor->s_current_l2, dsmr_p1_sensor->s_current_l3, dsmr_p1_sensor->s_power_delivered_l1, dsmr_p1_sensor->s_power_delivered_l2, dsmr_p1_sensor->s_power_delivered_l3, dsmr_p1_sensor->s_power_returned_l1, dsmr_p1_sensor->s_power_returned_l2, dsmr_p1_sensor->s_power_returned_l3, dsmr_p1_sensor->s_gas_device_type, dsmr_p1_sensor->s_gas_valve_position, dsmr_p1_sensor->s_gas_delivered};      
+    sensors:
+    - name: "Consumption Low Tarif"
+      unit_of_measurement: kWh
+      accuracy_decimals: 3
+      icon: "mdi:flash"
+    - name: "Consumption High Tarif"
+      unit_of_measurement: kWh
+      accuracy_decimals: 3
+      icon: "mdi:flash"
+    - name: "Return Low Tarif"
+      unit_of_measurement: kWh
+      accuracy_decimals: 3
+      icon: "mdi:flash-outline"
+    - name: "Return High Tarif"
+      unit_of_measurement: kWh
+      accuracy_decimals: 3
+      icon: "mdi:flash-outline"
+    - name: "Power Consumption"
+      unit_of_measurement: kW
+      accuracy_decimals: 3
+      icon: "mdi:flash"
+    - name: "Power Production"
+      unit_of_measurement: kW
+      accuracy_decimals: 3
+      icon: "mdi:flash-outline"
+    - name: "Power failures in any phase"
+      accuracy_decimals: 0
+      icon: "mdi:flash-alert"
+    - name: "Long power failures in any phase"
+      accuracy_decimals: 0
+      icon: "mdi:flash-alert"
+    - name: "Voltage sags in phase L1"
+      accuracy_decimals: 0
+      icon: "mdi:flash-alert"
+    - name: "Voltage sags in phase L2"
+      accuracy_decimals: 0
+      icon: "mdi:flash-alert"
+    - name: "Voltage sags in phase L3"
+      accuracy_decimals: 0
+      icon: "mdi:flash-alert"
+    - name: "Voltage swells in phase L1"
+      accuracy_decimals: 0
+      icon: "mdi:flash-alert"
+    - name: "Voltage swells in phase L2"
+      accuracy_decimals: 0
+      icon: "mdi:flash-alert"
+    - name: "Voltage swells in phase L3"
+      accuracy_decimals: 0
+      icon: "mdi:flash-alert"
+    - name: "Instant Voltage L1"
+      unit_of_measurement: V
+      accuracy_decimals: 3
+      icon: "mdi:flash"
+    - name: "Instant Voltage L2"
+      unit_of_measurement: V
+      accuracy_decimals: 3
+      icon: "mdi:flash"
+    - name: "Instant Voltage L3"
+      unit_of_measurement: V
+      accuracy_decimals: 3
+      icon: "mdi:flash"
+    - name: "Instant Current L1"
+      unit_of_measurement: A
+      accuracy_decimals: 0 #this is at Amp resolution according to specs. So no milli A. 
+      icon: "mdi:current-ac"
+    - name: "Instant Current L2"
+      unit_of_measurement: A
+      accuracy_decimals: 0
+      icon: "mdi:current-ac"
+    - name: "Instant Current L3"
+      unit_of_measurement: A
+      accuracy_decimals: 0
+      icon: "mdi:current-ac"
+    - name: "Power Consumption Phase L1"
+      unit_of_measurement: kW
+      accuracy_decimals: 3
+      icon: "mdi:flash"
+    - name: "Power Consumption Phase L2"
+      unit_of_measurement: kW
+      accuracy_decimals: 3
+      icon: "mdi:flash"
+    - name: "Power Consumption Phase L3"
+      unit_of_measurement: kW
+      accuracy_decimals: 3
+      icon: "mdi:flash"
+    - name: "Power Production Phase L1"
+      unit_of_measurement: kW
+      accuracy_decimals: 3
+      icon: "mdi:flash-outline"
+    - name: "Power Production Phase L2"
+      unit_of_measurement: kW
+      accuracy_decimals: 3
+      icon: "mdi:flash-outline"
+    - name: "Power Production Phase L3"
+      unit_of_measurement: kW
+      accuracy_decimals: 3
+      icon: "mdi:flash-outline"
+    - name: "Gas device type"
+      icon: "mdi:fire"
+    - name: "Gas valve position"
+      icon: "mdi:fire"
+    - name: "Gas Consumption"
+      unit_of_measurement: m3
+      accuracy_decimals: 3
+      icon: "mdi:fire"
